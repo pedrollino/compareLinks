@@ -1,7 +1,7 @@
 {
-  "name": "comparelinks",
+  "name": "backend",
   "version": "1.0.0",
-  "main": "comparador.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,8 +11,10 @@
   "type": "module",
   "description": "",
   "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
     "pixelmatch": "^7.1.0",
     "pngjs": "^7.0.0",
-    "puppeteer": "^24.8.0"
+    "puppeteer": "^24.8.2"
   }
 }
