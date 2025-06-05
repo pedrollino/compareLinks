@@ -40,11 +40,10 @@ function compararBuffers(buf1, buf2, nomeArquivoDiff) {
   const height = Math.min(img1.height, img2.height);
   const diff = new PNG({ width, height });
 
-  const numDiffPixels = pixelmatch(img1.data, img2.data, diff.data, width, height, { threshold: 0.01 });
+  const numDiffPixels = pixelmatch(img1.data, img2.data, diff.data, width, height, { threshold: 0.1 });
   const igualdade = 100 - ((numDiffPixels / (width * height)) * 100);
 
   console.log(`Comparação resultou em ${igualdade.toFixed(2)}% de similaridade.`);
-
   if (igualdade < 97) {
     const diffPath = path.join(pastaSaida, nomeArquivoDiff);
     fs.writeFileSync(diffPath, PNG.sync.write(diff));
