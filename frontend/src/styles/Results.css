@@ -1,0 +1,21 @@
+.result-box {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin-left: 1rem;
+}
+
+.result-box label {
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.result-textarea {
+    height: 400px;
+    resize: vertical;
+    padding: 0.5rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-family: monospace;
+    background-color: #333;
+}
