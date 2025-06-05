@@ -1,0 +1,14 @@
+.fields-container {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+ 
+.input {
+    padding: 0.5rem;
+    width: 300px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}   
