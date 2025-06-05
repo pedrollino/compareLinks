@@ -1,4 +1,10 @@
 import { useState } from 'react';
+import Header from './components/Header';
+import Results from './components/Results';
+import InputUrl from './components/InputUrl';
+import Button from './components/Button';
+import FieldsUrl from './components/FIeldsUrl';
+import "./App.css";
 
 export default function App() {
   const [linkLocal, setLinkLocal] = useState('');
@@ -32,41 +38,33 @@ export default function App() {
   };
 
   return (
-    <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem', fontFamily: 'sans-serif' }}>
-      <h1 style={{ textAlign: 'center' }}>Visual Compare</h1>
-
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', margin: '1rem 0' }}>
-        <input type="text" value={linkLocal} onChange={e => setLinkLocal(e.target.value)} placeholder="URL Local" />
-        <input type="text" value={linkServidor} onChange={e => setLinkServidor(e.target.value)} placeholder="URL Servidor" />
+    <div className='app-container'>
+      <Header />
+      <div>
+      <FieldsUrl 
+          linkLocal={linkLocal}
+          serverUrl={linkServidor}
+          onLocalChange={(e) => setLinkLocal(e.target.value)}
+          onServerChange={(e) => setLinkServidor(e.target.value)}
+        />
       </div>
-
-      <div style={{ display: 'flex', gap: '1rem' }}>
-        <div>
-          <label>Links para comparar</label>
-          <textarea
-            value={links}
-            onChange={e => setLinks(e.target.value)}
-            placeholder="Links para comparar"
-            style={{ flex: 1, height: '400px' }}
-          />
-        </div>
-
-        <div>
-          <label>URLs OK</label>
-          <textarea value={urlsOk} readOnly placeholder="URLs OK" style={{ flex: 1, height: '400px' }} />
-        </div>
-
-        <div>
-          <label>URLs com diferença</label>
-          <textarea value={urlsDiferentes} readOnly placeholder="URLs com diferença" style={{ flex: 1, height: '400px' }} />
-        </div>
+      <div className='main-content'>
+        <InputUrl value={links} onChange={(e) => setLinks(e.target.value)}/>
+        <Results 
+        title="✅ URLs OK"
+        placeholder="URLs OK"
+        value={urlsOk}
+        />
+        <Results 
+        title="⚠️ URLs com diferença"
+        placeholder="URLs com diferença"
+        value={urlsDiferentes}
+        />
       </div>
-
-      <div style={{ marginTop: '1rem' }}>
-        <button onClick={analisar} disabled={carregando}>
-          {carregando ? 'Analisando...' : 'Analisar URLs'}
-        </button>
-      </div>
+      <Button 
+      onClick={analisar} 
+      carregando={carregando}
+      />
     </div>
   );
 }
