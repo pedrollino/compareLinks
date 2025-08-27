@@ -8,7 +8,37 @@ Este projeto é uma aplicação fullstack que permite comparar visualmente pági
 
 ---
 
-## ▶️ Como rodar
+## ▶️ Como Rodar (Método Simplificado)
+
+Para iniciar o backend e o frontend de uma só vez, utilize o script de automação.
+
+### 1. Dê permissão de execução ao script (apenas na primeira vez):
+
+```bash
+chmod +x start-app.sh
+```
+
+---
+
+### 2. Execute o script:
+
+```bash
+./start-app.sh
+```
+
+---
+
+O script irá instalar todas as dependências necessárias e iniciar os dois servidores.
+
+Backend estará rodando em: http://localhost:4000
+
+Frontend estará acessível em: http://localhost:5173
+
+Acesse http://localhost:5173 no seu navegador para usar a aplicação. Para encerrar tudo, pressione Ctrl+C no terminal.
+
+---
+
+## ▶️ Como rodar (Método Manual)
 
 ### 1. Backend
 
@@ -41,11 +71,24 @@ Acesse no navegador: `http://localhost:5173`
    - **URL Servidor:** Ex: `http://192.168.0.10:8080/web/group/`
    - **Links para comparar:** coloque um por linha (ex: `cleveland`, `test-gating-form`...)
 
-2. Clique em **"Analisar URLs"**
+2. Etapa 1 **"Captura Local:"**
+   - Clique em **"Capturar Local"**
+   - O sistema acessa cada link usando a URL Local e salva os prints na pasta backend/prints com prefixo local_
 
-3. Os resultados serão exibidos nos campos de:
-   - **URLs OK** (sem diferença visual)
-   - **URLs com diferença** (com screenshots salvos na pasta `backend/prints`)
+3. Troque manualmente a porta/ambiente 
+
+4. Etapa 2 **"Captura Servidor:"**
+   - Clique em **"Capturar Servidor"**
+   - O sistema acessa cada link usando a URL Servidor e salva os prints na pasta backend/prints com prefixo servidor_.
+
+5. Etapa 3 **"Comparação:"**
+   - Clique em **"Comparar"**
+   - O backend carrega os prints local_*.png e servidor_*.png, gera os diffs (se houver) e retorna os resultados.
+   - Os diffs são salvos na pasta backend/prints com o sufixo _diff.png.
+
+6. **Resultados exibidos no frontend:**
+   - *URLs OK* → sem diferença visual
+   - *URLs com diferença* → diferença visual encontrada (print diff salvo em backend/prints)
 
 ---
 
@@ -62,6 +105,7 @@ comparador-visual-app/
 │       ├── App.jsx
 │       ├── main.jsx
 │       └── index.css
+└── start-app.sh              # Script de inicialização
 ```
 
 ---
