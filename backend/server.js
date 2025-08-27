@@ -54,44 +54,50 @@ function compararBuffers(buf1, buf2, nomeArquivoDiff) {
   return igualdade;
 }
 
-app.post('/comparar', async (req, res) => {
-  const { linkLocal, linkServidor, links } = req.body;
-  const urlsOk = [], urlsDiferentes = [];
-
+// --- capturar prints
+app.post('/capturar', async (req, res) => {
+  const { baseUrl, links, prefix } = req.body; 
+  // "local" ou "servidor"
   const browser = await puppeteer.launch({ headless: 'new' });
 
   for (const pathName of links) {
-    const urlLocal = linkLocal + pathName;
-    const urlServidor = linkServidor + pathName;
-    const nomeDiff = `${pathName.replaceAll('/', '_')}_diff.png`;
-
-    console.log(`\nIniciando comparação para: ${pathName}`);
-
-    const imgLocal = await tirarPrint(browser, urlLocal);
-    const imgServidor = await tirarPrint(browser, urlServidor);
-
-    if (!imgLocal || !imgServidor) {
-      console.warn(`Print falhou para ${pathName}. imgLocal: ${!!imgLocal}, imgServidor: ${!!imgServidor}`);
-      continue;
-    }
-
-    try {
-      const igualdade = compararBuffers(imgLocal, imgServidor, nomeDiff);
-      if (igualdade >= 97) {
-        urlsOk.push(pathName);
-      } else {
-        urlsDiferentes.push(pathName);
-      }
-    } catch (err) {
-      console.error(`Erro na comparação para ${pathName}:`, err.message);
-      urlsDiferentes.push(pathName);
+    const url = baseUrl + pathName;
+    const img = await tirarPrint(browser, url);
+    if (img) {
+      const filePath = path.join(pastaSaida, `${prefix}_${pathName.replaceAll('/', '_')}.png`);
+      fs.writeFileSync(filePath, img);
+      console.log(`Print salvo: ${filePath}`);
     }
   }
 
   await browser.close();
-  console.log("\nResumo final:");
-  console.log("URLs OK:", urlsOk);
-  console.log("URLs com diferença:", urlsDiferentes);
+  res.json({ status: 'ok', message: `Prints capturados com prefixo ${prefix}` });
+});
+
+// --- comparar prints salvos
+app.post('/comparar-salvos', async (req, res) => {
+  const { links } = req.body;
+  const urlsOk = [], urlsDiferentes = [];
+
+  for (const pathName of links) {
+    const fileLocal = path.join(pastaSaida, `local_${pathName.replaceAll('/', '_')}.png`);
+    const fileServidor = path.join(pastaSaida, `servidor_${pathName.replaceAll('/', '_')}.png`);
+
+    if (!fs.existsSync(fileLocal) || !fs.existsSync(fileServidor)) {
+      console.warn(`Arquivos não encontrados para ${pathName}`);
+      continue;
+    }
+
+    const bufLocal = fs.readFileSync(fileLocal);
+    const bufServidor = fs.readFileSync(fileServidor);
+
+    const igualdade = compararBuffers(bufLocal, bufServidor, `${pathName.replaceAll('/', '_')}_diff.png`);
+    if (igualdade >= 97) {
+      urlsOk.push(pathName);
+    } else {
+      urlsDiferentes.push(pathName);
+    }
+  }
 
   res.json({ urlsOk, urlsDiferentes });
 });
