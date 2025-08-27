@@ -54,10 +54,8 @@ function compararBuffers(buf1, buf2, nomeArquivoDiff) {
   return igualdade;
 }
 
-// --- capturar prints
 app.post('/capturar', async (req, res) => {
   const { baseUrl, links, prefix } = req.body; 
-  // "local" ou "servidor"
   const browser = await puppeteer.launch({ headless: 'new' });
 
   for (const pathName of links) {
@@ -74,7 +72,6 @@ app.post('/capturar', async (req, res) => {
   res.json({ status: 'ok', message: `Prints capturados com prefixo ${prefix}` });
 });
 
-// --- comparar prints salvos
 app.post('/comparar-salvos', async (req, res) => {
   const { links } = req.body;
   const urlsOk = [], urlsDiferentes = [];
