@@ -8,7 +8,28 @@ export default function App() {
   const [urlsDiferentes, setUrlsDiferentes] = useState('');
   const [carregando, setCarregando] = useState(false);
 
-  const analisar = async () => {
+  const capturar = async (tipo) => {
+    setCarregando(true);
+
+    const arrayLinks = links.split(/[\n,]+/).map(l => l.replaceAll('"', '').trim()).filter(Boolean);
+    const baseUrl = tipo === "local" ? linkLocal : linkServidor;
+
+    try {
+      const res = await fetch('http://localhost:4000/capturar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ baseUrl, links: arrayLinks, prefix: tipo })
+      });
+      const data = await res.json();
+      alert(data.message);
+    } catch (err) {
+      console.error("Erro ao capturar:", err.message);
+    }
+
+    setCarregando(false);
+  };
+
+  const comparar = async () => {
     setCarregando(true);
     setUrlsOk('');
     setUrlsDiferentes('');
@@ -16,16 +37,16 @@ export default function App() {
     const arrayLinks = links.split(/[\n,]+/).map(l => l.replaceAll('"', '').trim()).filter(Boolean);
 
     try {
-      const res = await fetch('http://localhost:4000/comparar', {
+      const res = await fetch('http://localhost:4000/comparar-salvos', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ linkLocal, linkServidor, links: arrayLinks })
+        body: JSON.stringify({ links: arrayLinks })
       });
       const data = await res.json();
       setUrlsOk(data.urlsOk.join('\n'));
       setUrlsDiferentes(data.urlsDiferentes.join('\n'));
     } catch (err) {
-      console.error("Erro ao analisar:", err.message);
+      console.error("Erro ao comparar:", err.message);
     }
 
     setCarregando(false);
@@ -62,9 +83,15 @@ export default function App() {
         </div>
       </div>
 
-      <div style={{ marginTop: '1rem' }}>
-        <button onClick={analisar} disabled={carregando}>
-          {carregando ? 'Analisando...' : 'Analisar URLs'}
+      <div style={{ marginTop: '1rem', display: 'flex', gap: '1rem' }}>
+        <button onClick={() => capturar("local")} disabled={carregando}>
+          {carregando ? 'Capturando...' : 'Capturar Local'}
+        </button>
+        <button onClick={() => capturar("servidor")} disabled={carregando}>
+          {carregando ? 'Capturando...' : 'Capturar Servidor'}
+        </button>
+        <button onClick={comparar} disabled={carregando}>
+          {carregando ? 'Comparando...' : 'Comparar'}
         </button>
       </div>
     </div>
